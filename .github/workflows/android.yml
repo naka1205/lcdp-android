@@ -16,7 +16,9 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: "17"
+          # Capacitor 8 的 android 库以 Java 21 源码级别编译，JDK 17 会报
+          # invalid source release: 21（首轮 CI 实证），故用 21。
+          java-version: "21"
 
       - uses: actions/setup-node@v4
         with:

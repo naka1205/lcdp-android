@@ -17,7 +17,7 @@ LCDP（AI + 低代码平台）运行态的 Android 壳工程（M13 移动端适�
 
 **CI 构建（当前口径）**：push 到 main 或手动触发 `Android APK` workflow，产物 `app-debug.apk` 在 Actions 运行的 Artifacts 里下载。
 
-本地构建前置：JDK 17、Android SDK（platform 36、build-tools、platform-tools）。
+本地构建前置：JDK 21（Capacitor 8 的 android 库以 Java 21 源码级别编译）、Android SDK（platform 36、build-tools、platform-tools）。
 
 ```bash
 npm install
