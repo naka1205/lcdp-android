@@ -1,0 +1,14 @@
+node_modules/
+dist/
+
+# Android / Gradle
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+*.apk
+*.aab
+
+# OS / editor
+.DS_Store
+.idea/
