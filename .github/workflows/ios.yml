@@ -1,0 +1,48 @@
+name: iOS Simulator App
+
+# 壳工程的 iOS 模拟器包由 CI 构建（云端 VM 无 macOS 工具链）。
+# 产物为未签名的模拟器 .app（zip），用户解压后拖入 iOS 模拟器即可安装；
+# 真机签名与商店分发不在本期范围（与 Android debug APK 同口径）。
+on:
+  push:
+    branches: [main, feat/ios-simulator]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Sync Capacitor iOS project
+        run: npx cap sync ios
+
+      - name: Build simulator app (unsigned)
+        run: |
+          xcodebuild \
+            -project ios/App/App.xcodeproj \
+            -scheme App \
+            -configuration Debug \
+            -sdk iphonesimulator \
+            -derivedDataPath ios/build \
+            CODE_SIGNING_ALLOWED=NO \
+            build
+
+      - name: Package .app for simulator drag-install
+        run: |
+          cd ios/build/Build/Products/Debug-iphonesimulator
+          ditto -c -k --sequesterRsrc --keepParent App.app "$GITHUB_WORKSPACE/lcdp-runtime-ios-simulator.zip"
+
+      - name: Upload simulator app
+        uses: actions/upload-artifact@v4
+        with:
+          name: lcdp-runtime-ios-simulator-app
+          path: lcdp-runtime-ios-simulator.zip
+          if-no-files-found: error
